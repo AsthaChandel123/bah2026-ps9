@@ -27,6 +27,19 @@ calib/*.aomx
 *.aomx
 *.bin
 
+# --- results/: keep the small summary JSONs + key plots, exclude bulky artifacts ---
+# Large synthetic frame datasets and per-frame outputs must NOT be committed.
+results/synthetic/
+results/out_c/
+results/out_py/
+results/calib/
+# (but DO keep results/plots/*.png and results/*.json/*.txt -- re-allowed below)
+!results/
+!results/plots/
+!results/plots/*.png
+!results/*.json
+!results/*.txt
+
 # --- Editor / OS ---
 .vscode/
 .idea/

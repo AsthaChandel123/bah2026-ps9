@@ -29,4 +29,33 @@ The pipeline deliberately retains **alternatives at every stage** (53 distinct
 methods/algorithms/metrics; see ARCHITECTURE §7) across **three orthogonal data
 domains** — raw slopes, reconstructed phase, intensity. Independent estimators
 must agree; one fills the gaps of another. This is the headline robustness claim
-for the turbulence parameters in particular (`research/04` §5).
+for the turbulence parameters in particular (`research/04` §5). The turbulence
+bank alone supplies **≥7 r₀ + ≥6 τ₀ = ≥13 independent estimators**; counting the
+centroiders, reconstructors, screen generators, spot models and metrics the
+pipeline exposes **>30 distinct methods** end-to-end.
+
+## End-to-end integration (calibration → C core ↔ Python parity)
+
+The two tiers are wired by `scripts/build_calibration.py`, which serializes the
+AOMX matrices the C core (`bin/wfs_rt`) loads. Two integration conventions are
+fixed there so the C real-time path and the Python reference agree:
+
+* **Valid-node alignment** — the zonal reconstructor `R` (and synthesis `Z`) are
+  built on the **valid Fried corner nodes** (`N_phase` of them), so `φ = R·s` has
+  length `N_phase`. The DM command matrix `G` is therefore built on the *same*
+  valid nodes (shape `N_phase × N_phase`), so `a = G·φ` is dimensionally
+  consistent with `R`. (`dm.build_dm`'s default full `(n+1)²` grid would mismatch
+  `R`; the builder restricts the influence matrix to the valid nodes.)
+* **Modal slope units** — the analytic Zernike modal interaction matrix `M` is in
+  *normalized-coordinate gradient* units; the measured slope vector is in
+  **radians of tilt**. The builder scales `M` (hence `M⁺` and every Zernike-
+  variance r₀ estimator) by the physical factor `λ/(π·D) = (λ/2π)/(D/2)` so the
+  modal coefficients are correctly normalized. (The working `reconstructor`
+  module is left untouched; the documented scaling is applied in the integration
+  layer.)
+
+`scripts/run_pipeline_py.py` is the byte-faithful Python mirror of the C core
+(same window rounding, window-center references, thresholded-CoG centroider, and
+AOMX matrices), so the two produce slopes/phase/coefficients agreeing to float32
+round-off (≈1e-5). `tests/test_integration.py` automates the whole loop and the
+C↔Python parity check (`research/07` PART C).
