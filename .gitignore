@@ -1,0 +1,51 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+venv/
+.venv/
+env/
+
+# --- C build artifacts ---
+*.o
+*.obj
+*.so
+*.a
+*.out
+bin/
+build/
+
+# --- Generated data / outputs (keep configs, keep calib structure via .gitkeep if needed) ---
+data/synthetic/*
+out/
+out_py/
+calib/*.aomx
+*.aomx
+*.bin
+
+# --- results/: keep the small summary JSONs + key plots, exclude bulky artifacts ---
+# Large synthetic frame datasets and per-frame outputs must NOT be committed.
+results/synthetic/
+results/out_c/
+results/out_py/
+results/calib/
+# (but DO keep results/plots/*.png and results/*.json/*.txt -- re-allowed below)
+!results/
+!results/plots/
+!results/plots/*.png
+!results/*.json
+!results/*.txt
+
+# --- Editor / OS ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Keep configuration files (do NOT ignore config/*.json)
+!config/
+!config/*.json

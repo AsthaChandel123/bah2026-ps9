@@ -1,0 +1,15 @@
+wfs_rt timing report
+====================
+frames processed : 60 (failed 0)
+grid             : frame 256x256, n_sub=80, 2M=160, N=101, J=14, n_act=101
+mean valid subaps: 80.0 / 80   mean saturated acts: 0.0 / 101
+
+per-stage latency (microseconds)   min      mean      max
+  read+decode                     121.20   134.54   246.96
+  centroid (TWCoG)                183.04   202.66   310.88
+  reconstruct (R*s, M+*s)           2.73     4.64    15.17
+  dm command (G*phi)                1.35     2.10     4.09
+  TOTAL per frame                 315.76   343.93   475.10
+
+throughput       : 2908 FPS (mean total 343.93 us)
+budget           : 10000 us  -> 29x margin (mean), 21x (worst)

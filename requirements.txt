@@ -1,0 +1,10 @@
+# Python offline toolkit dependencies (installed via pip; network available).
+# The C real-time core has NO dependency on these (it links only -lm).
+# Pinned to reasonable lower bounds that install cleanly from wheels on Python 3.11.
+
+numpy>=1.26,<3.0
+scipy>=1.11,<2.0
+matplotlib>=3.7,<4.0
+
+# Test runner (optional but used by tests/ and `make`-adjacent workflows)
+pytest>=7.4,<9.0

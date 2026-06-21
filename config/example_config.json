@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "camera": {
+    "pixel_size_m": 5.5e-6,
+    "frame_w": 256,
+    "frame_h": 256,
+    "bit_depth": 8
+  },
+  "mla": {
+    "n_lenslets_x": 10,
+    "n_lenslets_y": 10,
+    "pitch_m": 1.5e-4,
+    "focal_length_m": 5.2e-3
+  },
+  "pupil": {
+    "diameter_m": 1.5e-3,
+    "center_x_px": 128.0,
+    "center_y_px": 128.0
+  },
+  "wavelength_m": 6.33e-7,
+  "dm": {
+    "n_act_x": 11,
+    "n_act_y": 11,
+    "pitch_m": 1.5e-4,
+    "coupling_coeff": 0.15,
+    "stroke_max_m": 3.5e-6,
+    "influence_model": "gaussian",
+    "influence_alpha": 2.0,
+    "stroke_gain_m_per_unit": 1.0e-6
+  },
+  "geometry": {
+    "type": "fried",
+    "rotation_deg": 0.0,
+    "flip_y": false
+  },
+  "cadence": {
+    "dt_s": 2.0e-3
+  },
+  "ground_truth": {
+    "r0_m": 0.15,
+    "tau0_s": 0.0045,
+    "wind_speed_mps": 10.0,
+    "L0_m": 25.0,
+    "zernike_noll": []
+  }
+}

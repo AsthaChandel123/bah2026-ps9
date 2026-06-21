@@ -1,0 +1,67 @@
+{
+  "n_frames": 60,
+  "M_valid_subaps": 80,
+  "n_phase_nodes": 101,
+  "n_act": 101,
+  "J_modes": 14,
+  "mean_valid_subaps": 80.0,
+  "mean_saturated_acts": 0.0,
+  "turbulence": {
+    "r0_m": {
+      "median": 0.000753699486639989,
+      "spread": 0.00025398542996748954,
+      "estimators": {
+        "R1_zernike_var": 0.000753699486639989,
+        "R6_vonkarman": 0.0002254152223486062,
+        "R4_phase_var": 0.0008996565632273505,
+        "R2_slope_var": 0.000883713936577552,
+        "R3_dimm": 0.0005279601002621476
+      }
+    },
+    "L0_m": 0.0015,
+    "tau0_s": {
+      "median": 0.006280829055333243,
+      "spread": 0.003164198290920947,
+      "estimators": {
+        "T1_autocorr": 0.006162785811114441,
+        "T2_psd": 0.00272837045300392,
+        "T4_struct_fn": 0.00934103654976138,
+        "T5_frozenflow": 0.006280829055333243,
+        "T3_greenwood": 0.006280829055333243,
+        "T6_tyler": 0.01292474067380067
+      }
+    },
+    "wind_speed_mps": 0.03767999999999999,
+    "f_greenwood_hz": 21.297188447823924,
+    "seeing_arcsec": 169.76833894069273,
+    "strehl_marechal": 0.03904565360882644,
+    "n_frames": 60,
+    "dt_s": 0.002,
+    "notes": "tip/tilt excluded from r0 fit; von Karman used (L0 finite)"
+  },
+  "validation": {
+    "r0_true_m": 0.0006,
+    "r0_est_median_m": 0.000753699486639989,
+    "r0_estimators": {
+      "R1_zernike_var": 0.000753699486639989,
+      "R6_vonkarman": 0.0002254152223486062,
+      "R4_phase_var": 0.0008996565632273505,
+      "R2_slope_var": 0.000883713936577552,
+      "R3_dimm": 0.0005279601002621476
+    },
+    "tau0_true_s": 0.005,
+    "tau0_est_median_s": 0.006280829055333243,
+    "tau0_estimators": {
+      "T1_autocorr": 0.006162785811114441,
+      "T2_psd": 0.00272837045300392,
+      "T4_struct_fn": 0.00934103654976138,
+      "T5_frozenflow": 0.006280829055333243,
+      "T3_greenwood": 0.006280829055333243,
+      "T6_tyler": 0.01292474067380067
+    },
+    "r0_recovery_error_pct": 25.61658110666484,
+    "tau0_recovery_error_pct": 25.61658110666486,
+    "zernike_rms_rad": 0.1529459791242646,
+    "strehl_marechal": 0.9768790103498376
+  }
+}
