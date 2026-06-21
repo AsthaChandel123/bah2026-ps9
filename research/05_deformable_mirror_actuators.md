@@ -76,12 +76,12 @@ Worked widths (pitch d = 1):
 
 | coupling c | sigma = d / sqrt(-2 ln c) | width / pitch |
 |---|---|---|
-| 0.05 | 0.408 d | 0.41 |
+| 0.05 | 0.409 d | 0.41 |
 | 0.10 | 0.466 d | 0.47 |
-| 0.15 | 0.519 d | 0.52 |
+| 0.15 | 0.513 d | 0.51 |
 | 0.20 | 0.557 d | 0.56 |
-| 0.27 | 0.598 d | 0.60 |
-| 0.35 | 0.673 d | 0.67 |
+| 0.27 | 0.618 d | 0.62 |
+| 0.35 | 0.690 d | 0.69 |
 
 Note: **Soapy's `GaussStack`** simply hard-codes `width = actSpacing/2` (i.e. `sigma = d/2`), which corresponds to coupling `c = exp(-d^2/(2(d/2)^2)) = exp(-2) ≈ 0.135` — right in the typical band. (Source: `soapy/DM.py`, `GaussStack.makeIMatShapes`, uses `aotools.gaussian2d(N, width, cent=(x,y))` with `width = pupil_size/(nxActuators-1)/2`.)
 
@@ -281,22 +281,22 @@ H= p1 [ 0.150  1.000  0.150 ]
 
 Desired surface (conjugate, after the /2 and unit-stroke normalisation), say `s_target = [0.5, 1.0, 0.5]^T`.
 
-**Naive (wrong):** `a = s_target = [0.5, 1.0, 0.5]`. Check the surface it actually makes: `H·s_target = [0.5+0.15+0.0005, 0.075+1.0+0.075, ...] = [0.650, 1.150, 0.650]` — **over-shot by ~15–30%** because neighbours added in. This is precisely the coupling error PS9 warns about.
+**Naive (wrong):** `a = s_target = [0.5, 1.0, 0.5]`. Check the surface it actually makes: `H·s_target = [0.5+0.15+~0, 0.075+1.0+0.075, ...] = [0.650, 1.150, 0.650]` — **over-shot by ~15–30%** because neighbours added in. This is precisely the coupling error PS9 warns about.
 
-**Correct (deconvolve coupling):** invert `H`.
+**Correct (deconvolve coupling):** invert `H` (verified numerically; det(H)=0.955):
 ```
-H^{-1} ≈
-   [  1.0234  -0.1539   0.0215 ]
-   [ -0.1539   1.0470  -0.1539 ]
-   [  0.0215  -0.1539   1.0234 ]
+H^{-1} =
+   [  1.0235  -0.1570   0.0230 ]
+   [ -0.1570   1.0471  -0.1570 ]
+   [  0.0230  -0.1570   1.0235 ]
 
 a = H^{-1} s_target
-  = [ 1.0234*0.5 -0.1539*1.0 +0.0215*0.5,
-     -0.1539*0.5 +1.0470*1.0 -0.1539*0.5,
-      0.0215*0.5 -0.1539*1.0 +1.0234*0.5 ]
-  = [ 0.369 , 0.893 , 0.369 ]
+  = [ 1.0235*0.5 -0.1570*1.0 +0.0230*0.5,
+     -0.1570*0.5 +1.0471*1.0 -0.1570*0.5,
+      0.0230*0.5 -0.1570*1.0 +1.0235*0.5 ]
+  = [ 0.366 , 0.890 , 0.366 ]
 ```
-So the correct commands are **smaller** than the naive samples (0.369 vs 0.5, 0.893 vs 1.0): each actuator is *backed off* to leave room for what its neighbours add. Verify: `H·a = [0.369+0.134+~0, 0.055+0.893+0.055, ...] ≈ [0.503, 1.003, 0.503] ✓` reproduces `s_target`. The off-diagonal `−0.154` terms in `H^{-1}` are the **explicit "anti-coupling"** — the inverse subtracts neighbour contributions. That is the deconvolution of inter-actuator coupling, in numbers.
+So the correct commands are **smaller** than the naive samples (0.366 vs 0.5, 0.890 vs 1.0): each actuator is *backed off* to leave room for what its neighbours add. Verify: `H·a = [0.500, 1.000, 0.500] ✓` reproduces `s_target` exactly. The off-diagonal `−0.157` terms in `H^{-1}` are the **explicit "anti-coupling"** — the inverse subtracts neighbour contributions. That is the deconvolution of inter-actuator coupling, in numbers.
 
 ### 9.2 2-D, 3×3 grid sketch
 For a 3×3 actuator grid (9 actuators), order them row-major. The 9×9 coupling matrix `H` has:
@@ -308,7 +308,7 @@ For a 3×3 actuator grid (9 actuators), order them row-major. The 9×9 coupling 
 With `c = 0.15`: edge neighbours 0.15, diagonal neighbours 0.0225. `H` is a sparse, symmetric, banded (block-tridiagonal) matrix. The actuator map is again `a = H^{-1} s_target` (or `H^+ s_target` if you sample the surface on a denser grid than the actuators). For real `N`~hundreds, `H^{-1}` (or `H^+`) is precomputed once; per-frame cost = one `N×M` MVM.
 
 ### 9.3 Effect of larger coupling
-Repeat 9.1 with ALPAO-like `c = 0.35`: off-diagonal of `H` = 0.35, the inverse's anti-coupling terms grow to ≈ −0.45, the correct commands shrink further (≈ 0.30, 0.78, 0.30), and `κ(H)` rises — illustrating why higher coupling needs more care / regularization (Section 4, 8).
+Repeat 9.1 with ALPAO-like `c = 0.35`: off-diagonal of `H` = 0.35, the inverse's anti-coupling terms grow to ≈ −0.4545, and the correct commands shrink further to **[0.195, 0.864, 0.195]** (vs the naive 0.5/1.0/0.5) — illustrating that the more the actuators couple, the more each must be backed off, and the more the inversion (and any regularization, Section 4) matters. The conditioning also worsens as `c` grows (Section 4, 8).
 
 ---
 
